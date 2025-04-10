@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reconocimiento de Dígitos</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      background-color: #fff;
+      touch-action: none;
+    }
+    button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Dibuja un número (0-9)</h2>
+  <canvas id="canvas" width="280" height="280"></canvas><br>
+  <button onclick="predecirDigito()">Predecir</button>
+  <button onclick="limpiarCanvas()">Limpiar</button>
+  <p id="resultado"></p>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.lineWidth = 15;
+    ctx.lineCap = "round";
+
+    let dibujando = false;
+    canvas.addEventListener("mousedown", () => dibujando = true);
+    canvas.addEventListener("mouseup", () => dibujando = false);
+    canvas.addEventListener("mouseout", () => dibujando = false);
+    canvas.addEventListener("mousemove", dibujar);
+
+    function dibujar(event) {
+      if (!dibujando) return;
+      const rect = canvas.getBoundingClientRect();
+      ctx.beginPath();
+      ctx.moveTo(event.clientX - rect.left, event.clientY - rect.top);
+      ctx.lineTo(event.clientX - rect.left, event.clientY - rect.top);
+      ctx.stroke();
+    }
+
+    function limpiarCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    async function predecirDigito() {
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+      const formData = new FormData();
+      formData.append("file", blob, "dibujo.png");
+
+      const response = await fetch("http://127.0.0.1:8000/predecir/", {
+        method: "POST",
+        body: formData
+      });
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById("resultado").textContent = "Número predicho: " + data.digito;
+      } else {
+        document.getElementById("resultado").textContent = "Error al predecir el dígito.";
+      }
+    }
+
+    limpiarCanvas();
+  </script>
+</body>
+</html>
