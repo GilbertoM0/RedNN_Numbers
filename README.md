@@ -4,9 +4,7 @@
 
 > [!NOTE]
 > He completado el entrenamiento de un modelo para clasificar imágenes del dataset MNIST, que descargué utilizando la librería TensorFlow Datasets (tfds). El modelo se entrenó con el objetivo de alcanzar una precisión mínima del 97%, lo cual se validó utilizando el método evaluate() de Keras.
-
 Para poner este modelo a disposición a través de una aplicación web, opté por utilizar FastAPI, un framework ligero y rápido que permite crear APIs de alto rendimiento. El servidor está configurado para recibir solicitudes de clasificación y devolver las predicciones correspondientes.
-
 Este enfoque proporciona una interfaz sencilla y eficiente para interactuar con el modelo entrenado, optimizando tanto el rendimiento como la facilidad de despliegue en producción.
 
 # Responda las siguientes preguntas:
