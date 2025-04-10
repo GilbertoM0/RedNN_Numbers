@@ -1,6 +1,7 @@
 # DOCUMENTACION
 > [!Important]
 > Levante un servidor local para poder realizar las pruebas, el link es el deploy de la pagina pero recomiendo hacerlo localmente todo, ya que no tengo el servidor en la nube aún.
+
 > [!NOTE]
 > He completado el entrenamiento de un modelo para clasificar imágenes del dataset MNIST, que descargué utilizando la librería TensorFlow Datasets (tfds). El modelo se entrenó con el objetivo de alcanzar una precisión mínima del 97%, lo cual se validó utilizando el método evaluate() de Keras.
 
