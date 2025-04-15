@@ -8,29 +8,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Dibuja un número</h1>
+    <h1>Dibuja un numero</h1>
     <canvas id="canvas" width="280" height="280"></canvas>
     <div class="botones">
         <button onclick="limpiar()">Limpiar</button>
-        <button onclick="predecir()">Predecir</button>
+        <button onclick="predecir()">Predecir numero</button>
     </div>
     <p id="resultado"></p>
-
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let dibujando = false;
-
         // Color de fondo blanco
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-
-        // Estilo del trazo negro
-        ctx.lineWidth = 20;
+        ctx.lineWidth = 20; // Estilo del trazo negro
         ctx.lineCap = 'round';
         ctx.strokeStyle = 'black';
-
         canvas.addEventListener('mousedown', () => dibujando = true);
         canvas.addEventListener('mouseup', () => {
             dibujando = false;
@@ -38,7 +32,6 @@
         });
         canvas.addEventListener('mouseout', () => dibujando = false);
         canvas.addEventListener('mousemove', dibujar);
-
         function dibujar(event) {
             if (!dibujando) return;
             ctx.lineTo(event.offsetX, event.offsetY);
@@ -46,7 +39,6 @@
             ctx.beginPath();
             ctx.moveTo(event.offsetX, event.offsetY);
         }
-
         function limpiar() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white';
