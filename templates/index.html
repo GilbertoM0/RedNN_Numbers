@@ -1,0 +1,119 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconocimiento de Dígitos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Dibuja un número</h1>
+    <canvas id="canvas" width="280" height="280"></canvas>
+    <div class="botones">
+        <button onclick="limpiar()">Limpiar</button>
+        <button onclick="predecir()">Predecir</button>
+    </div>
+    <p id="resultado"></p>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let dibujando = false;
+
+        // Color de fondo blanco
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+
+        // Estilo del trazo negro
+        ctx.lineWidth = 20;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'black';
+
+        canvas.addEventListener('mousedown', () => dibujando = true);
+        canvas.addEventListener('mouseup', () => {
+            dibujando = false;
+            ctx.beginPath();
+        });
+        canvas.addEventListener('mouseout', () => dibujando = false);
+        canvas.addEventListener('mousemove', dibujar);
+
+        function dibujar(event) {
+            if (!dibujando) return;
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(event.offsetX, event.offsetY);
+        }
+
+        function limpiar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function predecir() {
+            const imagen = canvas.toDataURL();
+            fetch('/predecir', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: imagen })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('resultado').textContent = `Número reconocido: ${data.resultado}`;
+            });
+        }
+    </script>
+    <div id="fondo-animado"></div>
+
+    <style>
+        #fondo-animado {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+    
+        .figura {
+            position: absolute;
+            font-size: 2.5em;
+            opacity: 0.1;
+            color: #000;
+            animation: flotar 20s linear infinite;
+            user-select: none;
+            pointer-events: none;
+        }
+    
+        @keyframes flotar {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-150vh) rotate(360deg);
+            }
+        }
+    </style>
+    
+    <script>
+        const simbolos = ['✏️', '🔢', '➕', '➖', '✖️', '➗', '🟢', '🔺', '🔷', '🟡', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        const fondo = document.getElementById('fondo-animado');
+    
+        for (let i = 0; i < 40; i++) {
+            const figura = document.createElement('div');
+            figura.className = 'figura';
+            figura.textContent = simbolos[Math.floor(Math.random() * simbolos.length)];
+            figura.style.left = Math.random() * 100 + 'vw';
+            figura.style.top = Math.random() * 100 + 'vh';
+            figura.style.fontSize = `${Math.random() * 2 + 1.5}em`;
+            figura.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            fondo.appendChild(figura);
+        }
+    </script>
+    
+</body>
+</html>
